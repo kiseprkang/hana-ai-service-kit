@@ -40,7 +40,13 @@ def add_dropdown(ws, column, first_row, last_row, options):
 
 def new_sheet(wb, name, title, guide, headers, widths, example=None, first=False):
     """제목(1행), 작성 안내(2행), 헤더(3행), 예시 행(선택), 빈 입력 행으로 구성된 시트를 만듭니다."""
-    ws = wb.active if first else wb.create_sheet()
+    # 빈 기본 시트("Sheet")는 첫 번째 시트로 재사용해서 빈 시트가 남지 않게 합니다.
+    unused_default = (
+        len(wb.sheetnames) == 1
+        and wb.active.title == "Sheet"
+        and wb.active["A1"].value is None
+    )
+    ws = wb.active if (first or unused_default) else wb.create_sheet()
     ws.title = name
 
     ws["A1"] = title
@@ -137,6 +143,15 @@ def build_process():
 def build_test_plan():
     wb = Workbook()
     ws, first, last = new_sheet(
+        wb, "기준점", "08. 검증 계획 — 기준점 (합격 판단 기준)",
+        "합격 기준은 03 비기능 요구(NFR)와 04 수용 기준에서 가져옵니다. 기준값을 모르면 [확인 필요]로 둡니다.",
+        ["기준 구분", "기준 출처", "예시", "기준값"],
+        [18, 30, 36, 24],
+        example=["기능 기준", "04 수용 기준", "잔액이 계좌별로 표시된다", "수용 기준 전체 통과"],
+    )
+    add_dropdown(ws, "A", first, last, ["기능 기준", "성능·보안·감사 기준", "규제 기준", "사업 기준"])
+
+    ws, first, last = new_sheet(
         wb, "검증계획", "08. 검증 계획 — 검증 범위와 방법",
         "검증 유형별로 대상, 방법, 통과 기준을 정합니다. 보안·규제 점검은 해당 부서 기준을 따릅니다.",
         ["검증 유형", "대상", "방법", "담당", "통과 기준", "결과"],
@@ -147,10 +162,10 @@ def build_test_plan():
 
     ws, first, last = new_sheet(
         wb, "시나리오", "08. 검증 계획 — 테스트 시나리오",
-        "수용 기준(04 기능 명세서)을 시나리오로 옮깁니다. 결과는 실행 후 갱신합니다.",
-        ["ID", "시나리오", "기대 결과", "연결 명세", "결과"],
-        [10, 40, 40, 16, 14],
-        example=["TC-001", "잔액 조회 화면 진입", "계좌별 잔액이 마스킹 규칙대로 표시됨", "FN-01", "미실행"],
+        "모든 시나리오는 연결 ID(REQ, NFR, 수용 기준, G)를 하나 이상 적습니다. 누락 확인: node scripts/check-traceability.mjs",
+        ["ID", "시나리오", "기대 결과", "연결 ID (REQ/NFR/G)", "결과"],
+        [10, 40, 40, 20, 14],
+        example=["TC-001", "잔액 조회 화면 진입", "계좌별 잔액이 마스킹 규칙대로 표시됨", "REQ-001, G2", "미실행"],
     )
     add_dropdown(ws, "E", first, last, TEST_RESULT)
 
