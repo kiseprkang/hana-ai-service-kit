@@ -1,4 +1,4 @@
-// 화면 설계서(.pptx) 템플릿 생성 스크립트
+// 화면 설계서(.pptx) 템플릿 만들기 프로그램
 // 실행: NODE_PATH=<전역 npm 모듈 경로> node tools/build-templates/build_pptx.js
 // 출력: templates/pptx/05_화면설계서.pptx
 

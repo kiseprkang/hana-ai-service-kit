@@ -1,6 +1,6 @@
-// 출시 전 점검: 필수 문서 누락 여부와 게이트 판정 상태를 확인합니다.
+// 출시 전 점검: 필수 문서 누락 여부와 검토 관문 판정 상태를 확인합니다.
 // 사용법: node scripts/check-gates.mjs
-// 종료 코드: 0 = 모두 통과, 1 = 누락 또는 미검토·보류 게이트 있음
+// 종료 코드: 0 = 모두 통과, 1 = 누락 또는 미검토·보류 검토 관문 있음
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -49,7 +49,7 @@ function main() {
     missingDocs.forEach((name) => console.log(`  [누락] docs/${name}`));
   }
 
-  console.log("\n== 게이트 판정 ==");
+  console.log("\n== 검토 관문 판정 ==");
   gates.forEach((gate) => {
     const mark = gate.passed ? "[통과]" : "[미완료]";
     console.log(`  ${mark} ${gate.name}: ${gate.status}`);
