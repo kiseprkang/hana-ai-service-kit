@@ -1,0 +1,16 @@
+# 사내 자료는 실수로라도 Git에 올라가지 않도록 제외합니다
+company-materials/*
+!company-materials/README.md
+!company-materials/.gitkeep
+
+# OS, 에디터 임시 파일
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# 로컬 설정 (개인별 권한·환경)
+.claude/settings.local.json
+.env
+.env.*
